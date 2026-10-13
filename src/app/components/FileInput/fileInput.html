@@ -1,0 +1,29 @@
+<div
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (dragenter)="$event.preventDefault()"
+  (drop)="onDropped($event)"
+  class="dropzone h-full w-full flex flex-col items-center justify-center p-3 bg-blue-100 text-blue-600 border border-dashed border-blue-500 rounded transition-all duration-300"
+>
+  <label for="fileInput" [ngClass]="isDragging() ? 'hidden' : 'inline'"> Drop XML file here </label>
+
+  <ng-icon name="heroDocumentArrowDown" [size]="isDragging() ? '7rem' : '5rem'" class="my-5" />
+
+  <input
+    #fileInput
+    class="hidden"
+    type="file"
+    multiple="false"
+    accept="text/xml"
+    (change)="onSelected($event)"
+  />
+
+  <button
+    (click)="fileInput.click()"
+    class="mt-2"
+    appButton
+    [ngClass]="isDragging() ? 'hidden' : 'inline-flex'"
+  >
+    Select file
+  </button>
+</div>

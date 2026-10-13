@@ -1,0 +1,32 @@
+<div class="xml-viewer w-full h-full flex grow flex-col gap-1 justify-between">
+  <div class="overflow-y-auto w-full grow h-0 border border-blue-500 rounded py-4">
+    <div class="flex flex-col grow min-h-full gap-1 items-center justify-center">
+      @for (book of xmlBooks(); track book.id) {
+        <book-item [book]="book" [viewOnly]="true" />
+      } @empty {
+        <ng-icon name="heroFolderOpen" size="6em" />
+        <h2 class="font-bold">No books found</h2>
+        <span>
+          Try to
+          <button
+            appButton
+            class="text-xs font-light px-3! py-1.5! rounded-xl"
+            (click)="onChancel.emit()"
+          >
+            import different file
+          </button>
+        </span>
+      }
+    </div>
+  </div>
+
+  <div class="w-full flex justify-end gap-0.5">
+    @if (xmlBooks().length > 0) {
+      <button appButton (click)="importBooks(false)">Add</button>
+      @if (booksService.books().length > 0) {
+        <button appButton (click)="importBooks(true)">Replace</button>
+      }
+    }
+    <button appButton (click)="onChancel.emit()">Chancel</button>
+  </div>
+</div>

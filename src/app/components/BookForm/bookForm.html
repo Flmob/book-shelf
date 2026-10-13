@@ -1,0 +1,55 @@
+<form class="flex flex-col gap-1 w-full h-full justify-between" [formRoot]="bookForm">
+  <div class="flex flex-col gap-0.5">
+    @if (bookForm().value().id) {
+      <label for="id" class="flex flex-col gap-0.5">
+        <span class="required px-1 text-sm">ID</span>
+        <input
+          class="border rounded border-blue-500 py-1 px-2"
+          type="text"
+          id="id"
+          [formField]="bookForm.id"
+        />
+      </label>
+    }
+
+    <label for="title" class="flex flex-col gap-0.5">
+      <span class="required px-1 text-sm">Title</span>
+      <input
+        class="border rounded border-blue-500 py-1 px-2"
+        type="text"
+        id="title"
+        [formField]="bookForm.title"
+        placeholder="Book Title"
+        autofocus
+      />
+    </label>
+
+    <label for="author" class="flex flex-col gap-0.5">
+      <span class="required px-1 text-sm">Author</span>
+      <input
+        class="border rounded border-blue-500 py-1 px-2"
+        type="text"
+        id="author"
+        [formField]="bookForm.author"
+        placeholder="Book Author"
+      />
+    </label>
+
+    <label for="pages" class="flex flex-col gap-0.5">
+      <span class="required px-1 text-sm">Pages</span>
+      <input
+        class="border rounded border-blue-500 py-1 px-2"
+        type="number"
+        id="pages"
+        [formField]="bookForm.pages"
+        placeholder="Pages Count"
+      />
+    </label>
+  </div>
+
+  <div class="w-full flex justify-end gap-0.5">
+    <button type="submit" class="mt-10" appButton [disabled]="!bookForm().valid()">
+      {{ initialValues() ? 'Edit Book' : 'Add Book' }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,44 @@
+<div
+  class="flex gap-0.5 flex-wrap justify-between items-center border border-blue-500 rounded p-3 w-full max-w-150"
+>
+  <div class="px-4.5 py-2 border border-blue-500 rounded flex justify-center items-center">
+    <ng-icon name="heroBookOpen" size="4rem" />
+  </div>
+
+  <div class="fields flex flex-col gap-1.5 flex-wrap text-sm px-3 grow">
+    <book-field name="Id" [value]="book().id" />
+    <book-field name="Title" [value]="book().title" />
+    <book-field name="Author" [value]="book().author" />
+    <book-field name="Pages" [value]="book().pages" />
+  </div>
+
+  @if (!viewOnly()) {
+    <div class="actions flex gap-0.5">
+      <button appButton (click)="openEditModal()">
+        <ng-icon name="heroPencil" />
+      </button>
+      <button appButton (click)="openDeleteModal()">
+        <ng-icon name="heroTrash" />
+      </button>
+    </div>
+  }
+</div>
+
+<ng-template #editBookModalContent>
+  <book-form [initialValues]="book()" (onFormSubmit)="modalService.close()" />
+</ng-template>
+
+<ng-template #deleteBookModalContent>
+  <div class="flex flex-col gap-1 w-full h-full justify-between">
+    <span>
+      Are you sure you want to delete
+      <span class="font-bold">{{ book().title }}</span>
+      ?
+    </span>
+
+    <div class="w-full flex justify-end gap-0.5">
+      <button appButton (click)="deleteBook()">Yes</button>
+      <button appButton (click)="modalService.close()">Chancel</button>
+    </div>
+  </div>
+</ng-template>

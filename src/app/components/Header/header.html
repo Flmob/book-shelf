@@ -1,0 +1,23 @@
+<header class="p-3 flex justify-between items-center border-b border-blue-500">
+  <h1 class="cursor-default font-bold">Books Shelf</h1>
+
+  <div class="flex gap-1">
+    <button (click)="openAddModal()" appButton>
+      <ng-icon name="heroPlus" />
+    </button>
+    <button (click)="openImportModal()" appButton>
+      <ng-icon name="heroArrowDownTray" />
+    </button>
+    <button (click)="exportBooks()" appButton>
+      <ng-icon name="heroArrowUpTray" />
+    </button>
+  </div>
+</header>
+
+<ng-template #addBookModalContent>
+  <book-form (onFormSubmit)="modalService.close()" />
+</ng-template>
+
+<ng-template #importBooksModalContent>
+  <xml-form />
+</ng-template>

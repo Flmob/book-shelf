@@ -1,0 +1,29 @@
+<div
+  class="modal-overlay z-50 cursor-pointer fixed inset-0 w-screen h-screen justify-center items-center bg-blue-500/50 p-4"
+  [ngClass]="modalService.isOpen() ? 'flex' : 'hidden'"
+  (click)="modalService.close()"
+>
+  <div
+    class="modal-content flex flex-col cursor-default bg-white max-w-3xl w-full min-h-52 h-full border border-blue-500 rounded"
+    [ngClass]="
+      { sm: 'max-h-50', md: 'max-h-102', lg: 'max-h-152' }[modalService.modalData()?.height!]
+    "
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-header p-3 flex justify-between items-center border-b border-blue-500">
+      <h2>{{ modalService.modalData()?.title }}</h2>
+      <button (click)="modalService.close()" appButton>
+        <ng-icon name="heroXMark" />
+      </button>
+    </div>
+    <div class="modal-content flex grow p-3 items-center justify-center">
+      @if (isTemplate(modalService.modalData()?.content)) {
+        <ng-container
+          *ngTemplateOutlet="asTemplate(modalService.modalData()?.content)"
+        ></ng-container>
+      } @else {
+        <p>{{ modalService.modalData()?.content }}</p>
+      }
+    </div>
+  </div>
+</div>

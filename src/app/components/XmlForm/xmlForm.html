@@ -1,0 +1,5 @@
+@if (xmlFile()) {
+  <xml-viewer [xml]="xmlString()" (onChancel)="onFileChancel()" />
+} @else {
+  <file-input class="block h-full w-full" (onFilesSelect)="onFiles($event)" />
+}

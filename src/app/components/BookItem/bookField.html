@@ -1,0 +1,17 @@
+<div class="flex justify-between items-center min-w-20">
+  <div class="font-bold pr-1">{{ name() }}:</div>
+  <div class="flex grow border-t border-blue-500"></div>
+
+  @if (value()?.toString().length! >= 28) {
+    <div class="relative group">
+      <div class="pl-1 max-w-60 truncate">{{ value() }}</div>
+      <div
+        class="text-wrap break-all max-w-2xs absolute bottom-full first:top-full left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-sm text-white bg-blue-700 rounded shadow-lg hidden group-hover:block duration-300"
+      >
+        {{ value() }}
+      </div>
+    </div>
+  } @else {
+    <div class="pl-1 max-w-60 truncate">{{ value() }}</div>
+  }
+</div>
