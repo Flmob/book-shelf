@@ -3,7 +3,7 @@ import { form, FormField, FormRoot, disabled, required, min } from '@angular/for
 
 import type { Book, NewBook } from '../../services';
 import { BooksService } from '../../services';
-import { ButtonDirective } from '../../directives';
+import { AutofocusDirective, ButtonDirective } from '../../directives';
 
 const defaultBookValues: Book = {
   id: '',
@@ -15,7 +15,7 @@ const defaultBookValues: Book = {
 @Component({
   selector: 'book-form',
   templateUrl: 'bookForm.html',
-  imports: [ButtonDirective, FormField, FormRoot],
+  imports: [AutofocusDirective, ButtonDirective, FormField, FormRoot],
   styles: [
     `
       :host {
