@@ -4,5 +4,6 @@ export * from './BookItem';
 export * from './FileInput';
 export * from './GlobalModal';
 export * from './Header';
+export * from './SearchForm';
 export * from './XmlForm';
 export * from './XmlViewer';

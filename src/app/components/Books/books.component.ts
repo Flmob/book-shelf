@@ -8,14 +8,20 @@ import { BooksService, ModalService } from '../../services';
 import { BookItem } from '../BookItem';
 import { BookForm } from '../BookForm';
 import { XmlForm } from '../XmlForm';
+import { SearchForm } from '../SearchForm';
 
 import { ButtonDirective } from '../../directives';
 
 @Component({
   selector: 'books',
   templateUrl: 'books.html',
-  imports: [BookItem, BookForm, NgIcon, ButtonDirective, XmlForm],
-  providers: [provideIcons({ heroArrowPathRoundedSquare, heroFolderOpen })],
+  imports: [BookItem, BookForm, NgIcon, ButtonDirective, SearchForm, XmlForm],
+  providers: [
+    provideIcons({
+      heroArrowPathRoundedSquare,
+      heroFolderOpen,
+    }),
+  ],
   styles: [
     `
       :host {

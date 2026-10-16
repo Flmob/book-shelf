@@ -1,34 +1,39 @@
-<div class="flex grow flex-col items-center justify-center px-4 border border-blue-500 rounded h-0">
-  @if (booksService.isLoading()) {
-    <ng-icon name="heroArrowPathRoundedSquare" size="6em" class="animate-spin" />
-  } @else {
-    <div class="w-full py-4 flex flex-col gap-1 items-center overflow-y-auto">
-      @for (book of booksService.books(); track book.id) {
-        <book-item [book]="book" />
-      } @empty {
-        <ng-icon name="heroFolderOpen" size="6em" />
-        <h2 class="font-bold">No books found</h2>
-        <span>
-          Try to
-          <button
-            appButton
-            class="text-xs font-light px-3! py-1.5! rounded-xl"
-            (click)="openAddModal()"
-          >
-            create a new book
-          </button>
-          or
-          <button
-            appButton
-            class="text-xs font-light px-3! py-1.5! rounded-xl"
-            (click)="openImportModal()"
-          >
-            import books from XML file
-          </button>
-        </span>
-      }
-    </div>
-  }
+<div class="flex grow flex-col gap-1">
+  <search-form />
+  <div
+    class="flex grow flex-col items-center justify-center px-4 border border-blue-500 rounded h-0"
+  >
+    @if (booksService.isLoading()) {
+      <ng-icon name="heroArrowPathRoundedSquare" size="6em" class="animate-spin" />
+    } @else {
+      <div class="w-full py-3 flex flex-col gap-1 items-center overflow-y-auto">
+        @for (book of booksService.books(); track book.id) {
+          <book-item [book]="book" />
+        } @empty {
+          <ng-icon name="heroFolderOpen" size="6em" />
+          <h2 class="font-bold">No books found</h2>
+          <span>
+            Try to
+            <button
+              appButton
+              class="text-xs font-light px-3! py-1.5! rounded-xl"
+              (click)="openAddModal()"
+            >
+              create a new book
+            </button>
+            or
+            <button
+              appButton
+              class="text-xs font-light px-3! py-1.5! rounded-xl"
+              (click)="openImportModal()"
+            >
+              import books from XML file
+            </button>
+          </span>
+        }
+      </div>
+    }
+  </div>
 </div>
 
 <ng-template #addBookModalContent>

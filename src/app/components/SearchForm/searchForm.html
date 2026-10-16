@@ -1,0 +1,30 @@
+<form
+  class="flex justify-end gap-1 border border-blue-500 rounded px-4 py-1.5"
+  [formRoot]="queryForm"
+>
+  <input
+    type="text"
+    class="border rounded border-blue-500 py-1 px-2"
+    id="search"
+    placeholder="Search..."
+    [formField]="queryForm.search"
+  />
+  <button appButton (click)="onSortDirectionBtnClick($event)">
+    <ng-icon
+      [name]="
+        booksService.query().direction
+          ? booksService.query().direction === 'desc'
+            ? 'heroChevronUp'
+            : 'heroChevronDown'
+          : 'heroMinus'
+      "
+    />
+  </button>
+  <button
+    appButton
+    [disabled]="!booksService.query().search && !booksService.query().direction"
+    (click)="onClearBtnClick($event)"
+  >
+    <ng-icon name="heroXMark" />
+  </button>
+</form>
