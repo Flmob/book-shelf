@@ -58,14 +58,6 @@ export class Header {
     });
   }
 
-  addBook() {
-    this.booksService.addBook({
-      title: 'One',
-      author: 'Two',
-      pages: 3,
-    });
-  }
-
   exportBooks() {
     const xmlContent = builder.build({
       '?xml': {
