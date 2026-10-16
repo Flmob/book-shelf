@@ -14,7 +14,7 @@ export class IndexedDBService {
   private searchIndex = 'author_and_title';
   private db!: IDBDatabase;
 
-  onDbReady = new EventEmitter();
+  onDbInit = new EventEmitter();
   onDbInitError = new EventEmitter();
 
   constructor() {
@@ -23,6 +23,7 @@ export class IndexedDBService {
 
   initDB() {
     const request = indexedDB.open(this.dbName, 1);
+
     request.onupgradeneeded = (event: any) => {
       this.db = event.target.result;
       if (!this.db.objectStoreNames.contains(this.storeName)) {
@@ -38,7 +39,7 @@ export class IndexedDBService {
     request.onsuccess = (event: any) => {
       this.db = event.target.result;
       console.log('Database initialized successfully');
-      this.onDbReady.emit();
+      this.onDbInit.emit();
     };
     request.onerror = (event) => {
       console.error('Error initializing database:', (event.target as IDBOpenDBRequest).error);

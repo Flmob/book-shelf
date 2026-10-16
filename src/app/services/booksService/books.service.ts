@@ -1,6 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
-
 import { IndexedDBService, SearchOptions } from '../indexedDBService';
+import { inject, Injectable, signal } from '@angular/core';
 
 import { getId } from '../../helpers';
 
@@ -33,13 +32,16 @@ export class BooksService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.indexedDBService.onDbReady.subscribe(async () => {
-      await this.getBooks();
-    });
+    return new Promise<void>((resolve, reject) => {
+      this.indexedDBService.onDbInit.subscribe(async () => {
+        resolve();
+      });
 
-    this.indexedDBService.onDbInitError.subscribe(() => {
-      this.isLoading.set(false);
-      this.error.set('Something went wrong during indexDB initialization');
+      this.indexedDBService.onDbInitError.subscribe(() => {
+        this.isLoading.set(false);
+        this.error.set('Something went wrong during indexDB initialization');
+        reject();
+      });
     });
   }
 
