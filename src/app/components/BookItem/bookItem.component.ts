@@ -47,8 +47,10 @@ export class BookItem {
     });
   }
 
-  deleteBook() {
-    this.booksService.deleteBook(this.book() as Book);
+  async deleteBook() {
+    await this.booksService.deleteBook(this.book() as Book);
+    this.booksService.getBooks();
+
     this.modalService.close();
   }
 }

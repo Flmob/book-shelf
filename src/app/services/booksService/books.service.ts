@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 
-import { IndexedDBService } from '../indexedDBService';
+import { IndexedDBService, SearchOptions } from '../indexedDBService';
 
 import { getId } from '../../helpers';
 
@@ -22,6 +22,9 @@ export class BooksService {
   indexedDBService = inject(IndexedDBService);
 
   books = signal<Book[]>([]);
+  readonly query = signal<SearchOptions>({
+    search: '',
+  });
 
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -31,15 +34,7 @@ export class BooksService {
     this.error.set(null);
 
     this.indexedDBService.onDbReady.subscribe(async () => {
-      try {
-        const newBooks = await this.indexedDBService.getAllData();
-        this.books.set(newBooks);
-      } catch (error: unknown) {
-        console.error(error);
-        this.error.set('Something went wrong!');
-      } finally {
-        this.isLoading.set(false);
-      }
+      await this.getBooks();
     });
 
     this.indexedDBService.onDbInitError.subscribe(() => {
@@ -48,14 +43,27 @@ export class BooksService {
     });
   }
 
+  async getBooks(): Promise<void> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    try {
+      const newBooks = await this.indexedDBService.getData(this.query());
+      this.books.set(newBooks);
+    } catch (error: unknown) {
+      console.error(error);
+      this.error.set('Something went wrong!');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
   async addBook(book: NewBook): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
 
     try {
       await this.indexedDBService.addData({ ...book, id: book.id || getId() });
-      const newBooks = await this.indexedDBService.getAllData();
-      this.books.set(newBooks);
     } catch (error: unknown) {
       console.error(error);
       this.error.set('Something went wrong!');
@@ -69,11 +77,9 @@ export class BooksService {
     this.error.set(null);
 
     try {
-      Promise.allSettled(
+      await Promise.allSettled(
         books.map(async (book) => {
           this.indexedDBService.addData({ ...book, id: book.id || getId() });
-          const newBooks = await this.indexedDBService.getAllData();
-          this.books.set(newBooks);
         }),
       );
     } catch (error: unknown) {
@@ -90,8 +96,6 @@ export class BooksService {
 
     try {
       await this.indexedDBService.deleteAllData();
-      const newBooks = await this.indexedDBService.getAllData();
-      this.books.set(newBooks);
     } catch (error: unknown) {
       console.error(error);
       this.error.set('Something went wrong!');
@@ -106,8 +110,6 @@ export class BooksService {
 
     try {
       await this.indexedDBService.deleteData(book.id);
-      const newBooks = await this.indexedDBService.getAllData();
-      this.books.set(newBooks);
     } catch (error: unknown) {
       console.error(error);
       this.error.set('Something went wrong!');
@@ -122,8 +124,6 @@ export class BooksService {
 
     try {
       await this.indexedDBService.updateData(book);
-      const newBooks = await this.indexedDBService.getAllData();
-      this.books.set(newBooks);
     } catch (error: unknown) {
       console.error(error);
       this.error.set('Something went wrong!');

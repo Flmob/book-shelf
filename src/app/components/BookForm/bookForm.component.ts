@@ -1,4 +1,4 @@
-import { Component, input, output, linkedSignal, signal, inject } from '@angular/core';
+import { Component, input, output, linkedSignal, inject } from '@angular/core';
 import { form, FormField, FormRoot, disabled, required, min } from '@angular/forms/signals';
 
 import type { Book, NewBook } from '../../services';
@@ -59,8 +59,10 @@ export class BookForm {
         action: async (newModel) => {
           const bookData = newModel().value();
 
-          if (!bookData.id) this.booksService.addBook(bookData);
-          else this.booksService.editBook(bookData);
+          if (!bookData.id) await this.booksService.addBook(bookData);
+          else await this.booksService.editBook(bookData);
+
+          this.booksService.getBooks();
 
           this.onFormSubmit.emit();
         },

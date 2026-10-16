@@ -73,8 +73,9 @@ export class XmlViewer {
     if (deleteAll) {
       await this.booksService.deleteAllBooks();
     }
-
-    this.booksService.addBooks(this.xmlBooks());
+    await this.booksService.addBooks(this.xmlBooks());
+    
+    this.booksService.getBooks();
 
     this.modalService.close();
   }

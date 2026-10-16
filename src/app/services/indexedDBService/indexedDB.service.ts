@@ -1,11 +1,17 @@
 import { EventEmitter, Injectable } from '@angular/core';
 
+export type SortDirection = 'asc' | 'desc';
+export interface SearchOptions {
+  search: string;
+  direction?: SortDirection | null;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class IndexedDBService {
   private dbName = 'BooksShelf';
   private storeName = 'books';
+  private searchIndex = 'author_and_title';
   private db!: IDBDatabase;
 
   onDbReady = new EventEmitter();
@@ -20,9 +26,15 @@ export class IndexedDBService {
     request.onupgradeneeded = (event: any) => {
       this.db = event.target.result;
       if (!this.db.objectStoreNames.contains(this.storeName)) {
-        this.db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
+        const store = this.db.createObjectStore(this.storeName, {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
+
+        store.createIndex(this.searchIndex, ['author', 'title']);
       }
     };
+
     request.onsuccess = (event: any) => {
       this.db = event.target.result;
       console.log('Database initialized successfully');
@@ -44,13 +56,54 @@ export class IndexedDBService {
     });
   }
 
-  getAllData(): Promise<any[]> {
+  getData(options?: SearchOptions): Promise<any[]> {
+    const { search = null, direction } = options || {};
+
+    // cursorQuery is not efficient, so we will use getAll if we can
+    if (!search && !direction) {
+      return new Promise((resolve, reject) => {
+        const transaction = this.db.transaction(this.storeName, 'readonly');
+        const store = transaction.objectStore(this.storeName);
+        const request = store.getAll();
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    const searchStr = search ? search.toLowerCase() : null;
+
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction(this.storeName, 'readonly');
       const store = transaction.objectStore(this.storeName);
-      const request = store.getAll();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      const index = store.index(this.searchIndex);
+      const cursorQuery = index.openCursor(null, direction === 'desc' ? 'prev' : 'next');
+
+      const result: Record<string, any>[] = [];
+
+      cursorQuery.onsuccess = (event: Event) => {
+        const target = event.target as IDBRequest<IDBCursorWithValue | null>;
+        const cursor = target.result;
+
+        if (cursor) {
+          const value = cursor.value;
+          if (!searchStr) result.push(value);
+
+          const author = (value.author || '').toLowerCase();
+          const title = (value.title || '').toLowerCase();
+
+          if (author.includes(searchStr) || title.includes(searchStr)) {
+            result.push(value);
+          }
+
+          cursor.continue();
+        } else {
+          resolve(result);
+        }
+      };
+      cursorQuery.onerror = () => {
+        reject(cursorQuery.error);
+      };
     });
   }
 
